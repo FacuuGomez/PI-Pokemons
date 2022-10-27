@@ -2,119 +2,65 @@ const axios = require("axios");
 const { Pokemon, Type } = require("../db.js");
 
 const getAllPokemons = async (name) => {
-	const dataApi = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=40");
+	try {
+		const dataApi = await axios.get("https://pokeapi.co/api/v2/pokemon");
+		const dataNext = await axios.get(dataApi.data.next);
 
-	const array = dataApi.data.results;
+		const fourtyPokemons = [...dataApi.data.results, ...dataNext.data.results];
 
-	const arrayPromises = array.map(
-		async (pokemon) => await axios.get(pokemon.url)
-	);
+		const arrayPromises = fourtyPokemons.map(
+			async (pokemon) => await axios.get(pokemon.url)
+		);
 
-	const dataPokemonsApi = await Promise.all(arrayPromises);
+		const dataPokemonsApi = await Promise.all(arrayPromises);
 
-	const dataPokemonsDb = await Pokemon.findAll({
-		include: {
-			model: Type,
-			// attributes: ["name"],
-			through: {
-				attributes: [],
+		const dataPokemonsDb = await Pokemon.findAll({
+			include: {
+				model: Type,
+				// attributes: ["name"],
+				through: {
+					attributes: [],
+				},
 			},
-		},
-	});
-
-	const pokemonsApi = dataPokemonsApi.map((pokemon) => {
-		return {
-			id: pokemon.data.id,
-			name: pokemon.data.name,
-			image: pokemon.data.sprites.front_default,
-			types: pokemon.data.types.map((t) => t.type.name),
-		};
-	});
-
-	const pokemonsDb = dataPokemonsDb.map((pokemon) => {
-		return {
-			id: pokemon.id,
-			name: pokemon.name,
-			// image: pokemon.sprites.front_default,
-			types: pokemon.types.map((t) => t.name),
-		};
-	});
-
-	const allPokemons = [...pokemonsDb, ...pokemonsApi];
-
-	if (name) {
-		let pokemon = allPokemons.filter((pokemon) => {
-			if (pokemon.name.toLowerCase() === name.toLowerCase()) return pokemon;
 		});
 
-		if (!pokemon.length) throw Error("Incorrect name");
+		const pokemonsApi = dataPokemonsApi.map((pokemon) => {
+			return {
+				id: pokemon.data.id,
+				name: pokemon.data.name,
+				image: pokemon.data.sprites.front_default,
+				types: pokemon.data.types.map((t) => t.type.name),
+			};
+		});
 
-		return pokemon;
+		const pokemonsDb = dataPokemonsDb.map((pokemon) => {
+			return {
+				id: pokemon.id,
+				name: pokemon.name,
+				// image: pokemon.sprites.front_default,
+				types: pokemon.types.map((t) => t.name),
+			};
+		});
+
+		const allPokemons = [...pokemonsDb, ...pokemonsApi];
+
+		if (name) {
+			let pokemon = allPokemons.filter((pokemon) => {
+				if (pokemon.name.toLowerCase() === name.toLowerCase()) return pokemon;
+			});
+
+			if (!pokemon.length) throw Error("Incorrect name");
+
+			return pokemon;
+		}
+
+		return allPokemons;
+	} catch (error) {
+		console.log(error);
+
+		return { error: "¡ Connection problem, try again !" };
 	}
-
-	return allPokemons;
 };
-
-// const getAllPokemons = async (name) => {
-// 	try {
-// 		const dataApi = await axios.get("https://pokeapi.co/api/v2/pokemon");
-// 		const dataNext = await axios.get(dataApi.data.next);
-
-// 		const fourtyPokemons = [...dataApi.data.results, ...dataNext.data.results];
-
-// 		const arrayPromises = fourtyPokemons.map(
-// 			async (pokemon) => await axios.get(pokemon.url)
-// 		);
-
-// 		const dataPokemonsApi = await Promise.all(arrayPromises);
-
-// 		const dataPokemonsDb = await Pokemon.findAll({
-// 			include: {
-// 				model: Type,
-// 				// attributes: ["name"],
-// 				through: {
-// 					attributes: [],
-// 				},
-// 			},
-// 		});
-
-// 		const pokemonsApi = dataPokemonsApi.map((pokemon) => {
-// 			return {
-// 				id: pokemon.data.id,
-// 				name: pokemon.data.name,
-// 				image: pokemon.data.sprites.front_default,
-// 				types: pokemon.data.types.map((t) => t.type.name),
-// 			};
-// 		});
-
-// 		const pokemonsDb = dataPokemonsDb.map((pokemon) => {
-// 			return {
-// 				id: pokemon.id,
-// 				name: pokemon.name,
-// 				// image: pokemon.sprites.front_default,
-// 				types: pokemon.types.map((t) => t.name),
-// 			};
-// 		});
-
-// 		const allPokemons = [...pokemonsDb, ...pokemonsApi];
-
-// 		if (name) {
-// 			let pokemon = allPokemons.filter((pokemon) => {
-// 				if (pokemon.name.toLowerCase() === name.toLowerCase()) return pokemon;
-// 			});
-
-// 			if (!pokemon.length) throw Error("Incorrect name");
-
-// 			return pokemon;
-// 		}
-
-// 		return allPokemons;
-// 	} catch (error) {
-// 		console.log(error);
-
-// 		return { error: "¡ Connection problem, try again !" };
-// 	}
-// };
 
 const getPokemonsById = async (id) => {
 	if (id.length === 36) {
