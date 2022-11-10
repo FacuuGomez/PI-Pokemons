@@ -5,7 +5,7 @@ import "./App.css";
 import Home from "./components/Home/Home.jsx";
 import Landing from "./components/Landing/Landing.jsx";
 import Detail from "./components/Detail/Detail.jsx";
-import Create from "./components/Create/Create.jsx";
+import Nav from "./components/Nav/Nav.jsx";
 
 function App() {
 	return (
@@ -14,13 +14,12 @@ function App() {
 				<Landing />
 			</Route>
 			<Route path='/pokemons' exact>
+				<Nav />
 				<Home />
 			</Route>
 			<Route path='/pokemons/:id' exact>
+				<Nav />
 				<Detail />
-			</Route>
-			<Route path='/createPokemon'>
-				<Create />
 			</Route>
 		</div>
 	);

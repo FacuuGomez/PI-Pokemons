@@ -30,6 +30,7 @@ const getAllPokemons = async (name) => {
 				name: pokemon.data.name,
 				image: pokemon.data.sprites.front_default,
 				types: pokemon.data.types.map((t) => t.type.name),
+				attack: pokemon.data.stats[1].base_stat,
 			};
 		});
 
@@ -39,6 +40,7 @@ const getAllPokemons = async (name) => {
 				name: pokemon.name,
 				// image: pokemon.sprites.front_default,
 				types: pokemon.types.map((t) => t.name),
+				attack: pokemon.attack,
 			};
 		});
 
@@ -49,7 +51,7 @@ const getAllPokemons = async (name) => {
 				if (pokemon.name.toLowerCase() === name.toLowerCase()) return pokemon;
 			});
 
-			if (!pokemon.length) throw Error("Incorrect name");
+			if (!pokemon.length) return { error: "¡ That name does not exist !" };
 
 			return pokemon;
 		}

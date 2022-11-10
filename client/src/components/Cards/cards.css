@@ -1,0 +1,27 @@
+.containter-pages {
+	padding-top: 10px;
+	padding-bottom: 20px;
+}
+
+.page-number {
+	color: white;
+	padding: 10px;
+}
+
+.page-btn {
+	background-color: rgb(255, 230, 0);
+	font-weight: 700;
+	color: rgb(66, 66, 66);
+	padding: 5px 10px;
+	border-radius: 10px;
+	border: 2px solid blue;
+}
+
+.page-btn:hover {
+	background-color: rgba(255, 230, 0, 0.603);
+	font-weight: 700;
+	color: white;
+	padding: 5px 10px;
+	border-radius: 10px;
+	border-color: rgba(0, 0, 255, 0.616);
+}

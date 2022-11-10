@@ -2,29 +2,26 @@ const axios = require("axios");
 const { Type } = require("../db.js");
 
 const getTypes = async () => {
-	let getTypesDb = await Type.findAll();
+	const dataApi = await axios.get("https://pokeapi.co/api/v2/type");
 
-	let types = [];
-
-	getTypesDb.forEach((t) => {
-		types.push(t.name);
-	});
-
-	if (types.length) {
-		return types;
-	} else {
-		const dataApi = await axios.get("https://pokeapi.co/api/v2/type");
-
-		const types = dataApi.data.results.map((t) => t.name);
-
-		types.forEach(async (type) => {
-			await Type.create({
-				name: type,
-			});
+	const dataTypes = dataApi.data.results.map(async (t) => {
+		const [type, created] = await Type.findOrCreate({
+			where: {
+				name: t.name,
+			},
+			defaults: {
+				name: t.name,
+			},
 		});
 
-		return types;
-	}
+		return type;
+	});
+
+	const types = await Promise.all(dataTypes);
+
+	const format = types.map((t) => t.name);
+
+	return format;
 };
 
 module.exports = { getTypes };

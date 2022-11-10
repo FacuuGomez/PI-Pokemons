@@ -3,13 +3,22 @@ import { connect } from "react-redux";
 
 import Cards from "../Cards/Cards.jsx";
 import Loader from "../Loader/Loader.jsx";
+import Error from "../ErrorMessage/Error.jsx";
+import Filter from "../Filter/Filter.jsx";
+
 import { getAllPokemons } from "../../redux/actions";
+
+import image from "../../img/logo.png";
+
+import "./home.css";
 
 export class Home extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			loader: false,
+			error: false,
+			pokemons: [],
 		};
 	}
 
@@ -17,18 +26,32 @@ export class Home extends Component {
 		this.setState({ ...this.state, loader: true });
 
 		this.props.getAllPokemons();
+	}
 
-		this.setState({ ...this.state, loader: false });
+	componentDidUpdate(pP, pS) {
+		if (pS.loader) {
+			this.setState({
+				...this.state,
+				loader: false,
+				pokemons: this.props.pokemons,
+			});
+		}
 	}
 
 	render() {
 		return (
-			<div>
-				<h2>Home</h2>
+			<div className='home'>
+				<img src={image} alt='Image not found' className='image' />
+
+				<Filter pokemons={this.state.pokemons} />
 
 				{this.state.loader && <Loader />}
 
-				<Cards />
+				{!this.state.error ? (
+					<Cards pokemons={this.state.pokemons} />
+				) : (
+					<Error error={this.props.pokemons} />
+				)}
 			</div>
 		);
 	}

@@ -1,35 +1,35 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
-import Card from "../Card/Card";
+import Card from "../Card/Card.jsx";
+import Error from "../ErrorMessage/Error.jsx";
 
-const Cards = ({ isOpen, closeModal }) => {
-	// const [page, setPage] = useState(0);
+import "./cards.css";
+
+const Cards = () => {
+	const [page, setPage] = useState(0);
 
 	const state = useSelector((state) => state);
 
-	// let nextPage = function (e) {
-	// 	e.preventDefault();
-	// 	if (state.dogs.length >= page * 8 + 8) setPage(page + 1);
-	// };
+	let nextPage = function (e) {
+		e.preventDefault();
+		if (state.pokemons.length >= page * 12 + 12) setPage(page + 1);
+	};
 
-	// let prevPage = function (e) {
-	// 	e.preventDefault();
-	// 	if (page > 0) setPage(page - 1);
-	// };
+	let prevPage = function (e) {
+		e.preventDefault();
+		if (page > 0) setPage(page - 1);
+	};
 
 	return (
 		<div className='container'>
-			{/* <Filter isOpen={isOpen} closeModal={closeModal}>
-				<h3>Filter</h3>
-				<Search />
-			</Filter> */}
+			{!state.pokemons.length && !state.pokemons.error && (
+				<Error error='¡ There are no pokemons !' />
+			)}
 
 			<div className='containerCards'>
-				{state.pokemons &&
-					state.pokemons.map((pokemon, i) => {
-						// state.pokemons.slice(page * 8, page * 8 + 8).map((pokemon, i) => {
-						// console.log(pokemon);
+				{!state.pokemons.error ? (
+					state.pokemons.slice(page * 12, page * 12 + 12).map((pokemon, i) => {
 						return (
 							<Card
 								key={i}
@@ -39,24 +39,27 @@ const Cards = ({ isOpen, closeModal }) => {
 								types={pokemon.types}
 							/>
 						);
-					})}
+					})
+				) : (
+					<Error error={state.pokemons.error} />
+				)}
 			</div>
 
-			{/* <div className='containterPage'>
+			<div className='containter-pages'>
 				{state.pokemons && (
-					<div className='divBtn'>
-						<button className='btnPage' onClick={(e) => prevPage(e)}>
+					<div className='div-buttons'>
+						<button className='page-btn' onClick={(e) => prevPage(e)}>
 							⬅
 						</button>
-						<span className='numberPage'>
-							{page + 1}/{Math.ceil(state.pokemons.length / 8)}
+						<span className='page-number'>
+							{page + 1} | {Math.ceil(state.pokemons.length / 12)}
 						</span>
-						<button className='btnPage' onClick={(e) => nextPage(e)}>
+						<button className='page-btn' onClick={(e) => nextPage(e)}>
 							➡
 						</button>
 					</div>
 				)}
-			</div> */}
+			</div>
 		</div>
 	);
 };

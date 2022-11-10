@@ -1,0 +1,15 @@
+.detail-container {
+	color: white;
+	margin-bottom: 30px;
+}
+
+.data {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.no-added {
+	width: 120px;
+}

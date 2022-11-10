@@ -1,11 +1,14 @@
 import axios from "axios";
 
-export const GET_ALL_POKEMONS = "GET_ALL_POKEMONS";
 export const GET_POKEMON = "GET_POKEMON";
 export const GET_POKEMON_DETAIL = "GET_POKEMON_DETAIL";
 export const GET_POKEMON_BY_TYPE = "GET_POKEMON_BY_TYPE";
 export const GET_TYPES = "GET_TYPES";
 export const CREATE_POKEMON = "CREATE_POKEMON";
+
+export const GET_ALL_POKEMONS = "GET_ALL_POKEMONS";
+export const GET_API_POKEMONS = "GET_API_POKEMONS";
+export const GET_DB_POKEMONS = "GET_DB_POKEMONS";
 
 export const getAllPokemons = () => {
 	return function (dispatch) {
@@ -33,30 +36,44 @@ export const getPokemon = (name) => {
 
 export const getPokemonDetail = (id) => {
 	return function (dispatch) {
-		return axios.get(`http://localhost:3001/pokemons/${id}`).then((res) =>
+		return axios.get(`http://localhost:3001/pokemons/${id}`).then((res) => {
 			dispatch({
 				type: GET_POKEMON_DETAIL,
 				payload: res.data,
-			})
-		);
+			});
+		});
 	};
 };
 
 export const getTypes = () => {
 	return function (dispatch) {
-		return axios.get("http://localhost:3001/types").then((res) =>
+		return axios.get("http://localhost:3001/types").then((res) => {
 			dispatch({
 				type: GET_TYPES,
 				payload: res.data,
-			})
-		);
+			});
+		});
 	};
 };
 
-export const getPokemonByType = (type) => {
+export const getPokemonByType = (types, pokemons) => {
 	return {
 		type: GET_POKEMON_BY_TYPE,
-		payload: type,
+		payload: { types, pokemons },
+	};
+};
+
+export const getApiPokemons = (pokemons) => {
+	return {
+		type: GET_API_POKEMONS,
+		payload: pokemons,
+	};
+};
+
+export const getDbPokemons = (pokemons) => {
+	return {
+		type: GET_DB_POKEMONS,
+		payload: pokemons,
 	};
 };
 
