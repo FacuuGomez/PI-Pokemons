@@ -11,7 +11,6 @@ const postPokemon = async ({
 	types,
 }) => {
 	let pokemon = await Pokemon.create({
-		// id,
 		name,
 		height,
 		weight,

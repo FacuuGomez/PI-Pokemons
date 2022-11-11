@@ -11,14 +11,16 @@ const Cards = () => {
 
 	const state = useSelector((state) => state);
 
-	let nextPage = function (e) {
-		e.preventDefault();
-		if (state.pokemons.length >= page * 12 + 12) setPage(page + 1);
-	};
-
 	let prevPage = function (e) {
 		e.preventDefault();
+
 		if (page > 0) setPage(page - 1);
+	};
+
+	let nextPage = function (e) {
+		e.preventDefault();
+
+		if (state.pokemons.length >= page * 12 + 12) setPage(page + 1);
 	};
 
 	return (
@@ -51,9 +53,11 @@ const Cards = () => {
 						<button className='page-btn' onClick={(e) => prevPage(e)}>
 							⬅
 						</button>
+
 						<span className='page-number'>
 							{page + 1} | {Math.ceil(state.pokemons.length / 12)}
 						</span>
+
 						<button className='page-btn' onClick={(e) => nextPage(e)}>
 							➡
 						</button>
